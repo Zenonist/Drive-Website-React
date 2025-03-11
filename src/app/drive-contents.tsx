@@ -30,13 +30,6 @@ export default function DriveContents(props: {
 }) {
   const [currentFolder, setCurrentFolder] = useState<number>(1);
 
-  const getCurrentFiles = () => {
-    return mockFiles.filter((file) => file.parent === currentFolder);
-  };
-
-  const getCurrentFolders = () => {
-    return mockFolders.filter((folder) => folder.parent === currentFolder);
-  };
 
   const handleFolderClick = (folderId: number) => {
     setCurrentFolder(folderId);
@@ -47,7 +40,7 @@ export default function DriveContents(props: {
     let currentId = currentFolder;
 
     while (currentId !== 1) {
-      const folder = props.folders.find((file) => folder.id === currentId);
+      const folder = props.folders.find((folder) => folder.id === currentId);
       if (folder) {
         breadcrumbs.unshift(folder);
         currentId = folder.parent ?? 1;
