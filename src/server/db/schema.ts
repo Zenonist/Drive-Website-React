@@ -1,3 +1,5 @@
+import "server-only";
+
 import { int, text, index, singlestoreTableCreator, bigint } from "drizzle-orm/singlestore-core";
 
 // NOTE: This helps to avoid table name collisions with other application by prefixing the table name with the application name.
