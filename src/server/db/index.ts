@@ -11,8 +11,6 @@ import * as schema from "./schema";
 const globalForDb = globalThis as unknown as {
   client: Pool | undefined;
 };
-console.log("TEST")
-console.log(env.SINGLESTORE_HOST)
 
 const client = globalForDb.client ?? createPool({
   host: env.SINGLESTORE_HOST,
