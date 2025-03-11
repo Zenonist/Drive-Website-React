@@ -7,6 +7,8 @@ import { FileRow, FolderRow } from "./file-row";
 import { files_table, folders_table } from "~/server/db/schema";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { UploadButton } from "~/utils/uploadthing";
+import { useRouter } from "next/navigation";
 
 /**
  * A Google Drive clone component that displays folders and files in a hierarchical structure.
@@ -31,11 +33,8 @@ export default function DriveContents(props: {
   // we use same type as folders because parents represent folders
   parents: (typeof folders_table.$inferSelect)[];
 }) {
-  const breadcrumbs: unknown[] = [];
 
-  const handleUpload = () => {
-    alert("Upload functionality would be implemented here");
-  };
+  const navigate = useRouter();
 
   return (
     <div className="min-h-screen bg-gray-900 p-8 text-gray-100">
@@ -86,6 +85,10 @@ export default function DriveContents(props: {
             ))}
           </ul>
         </div>
+        <UploadButton endpoint="imageUploader" onClientUploadComplete={() => {
+          // Nextjs will update new route (hot-swap)
+          navigate.refresh();
+        }}/>
       </div>
     </div>
   );
