@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { mockFiles, mockFolders } from "../lib/mock-data";
 import { Folder, FileIcon, Upload, ChevronRight } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { FileRow, FolderRow } from "./file-row";
-import { files, folders } from "~/server/db/schema";
+import { files_table, folders_table } from "~/server/db/schema";
 import Link from "next/link";
 
 /**
@@ -26,10 +25,11 @@ import Link from "next/link";
  * @returns A React component that mimics Google Drive's file browser interface
  */
 export default function DriveContents(props: {
-  files: (typeof files.$inferSelect)[];
-  folders: (typeof folders.$inferSelect)[];
+  files: (typeof files_table.$inferSelect)[];
+  folders: (typeof folders_table.$inferSelect)[];
+  // we use same type as folders because parents represent folders
+  parents: (typeof folders_table.$inferSelect)[];
 }) {
-  const [currentFolder, setCurrentFolder] = useState<number>(1);
   const breadcrumbs: unknown[] = [];
 
   const handleUpload = () => {
@@ -47,7 +47,7 @@ export default function DriveContents(props: {
             >
               My Drive
             </Link>
-            {breadcrumbs.map((folder) => (
+            {props.parents.map((folder) => (
               <div key={folder.id} className="flex items-center">
                 <ChevronRight className="mx-2 text-gray-500" size={16} />
                 <Link
@@ -80,7 +80,6 @@ export default function DriveContents(props: {
               <FolderRow
                 key={folder.id}
                 folder={folder}
-                handleFolderClick={() => handleFolderClick(folder.id)}
               />
             ))}
             {props.files.map((file) => (
