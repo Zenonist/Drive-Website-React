@@ -44,3 +44,10 @@ yarn-error.log*
 
 # idea files
 .idea
+
+# SonarQube
+.scannerwork
+.sonarlint
+
+# Vscode
+.vscode
