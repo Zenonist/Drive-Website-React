@@ -21,7 +21,7 @@ export default async function GoogleDriveClone(props: {
     <DriveContents
       files={files}
       folders={folders}
-      parents={parents}
+      parents={parents.filter((parent) => parent !== undefined)}
     ></DriveContents>
   );
 }
