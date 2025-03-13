@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 import {
   ClerkProvider
 } from '@clerk/nextjs'
+import { PostHogProvider } from "./_providers/posthog-provider";
 
 export const metadata: Metadata = {
   title: "Google-Drive-Clone",
@@ -19,9 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
+      <PostHogProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>{children}</body>
       </html>
+      </PostHogProvider>
     </ClerkProvider>
   )
 }
