@@ -6,7 +6,6 @@ import {
     folders_table as folderSchema,
 } from "~/server/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
-import { timestamp } from "drizzle-orm/singlestore-core";
 
 export const QUERIES = {
     /**

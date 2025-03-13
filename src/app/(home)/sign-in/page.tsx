@@ -1,6 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
 

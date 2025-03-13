@@ -7,8 +7,6 @@ import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
-import { QUERIES } from "~/server/db/queries";
 /**
  * A Google Drive clone component that displays folders and files in a hierarchical structure.
  *
@@ -24,6 +22,9 @@ import { QUERIES } from "~/server/db/queries";
  * @param props.folders - Collection of folder objects inferred from the database schema
  *                        using Drizzle ORM's $inferSelect method, which extracts the
  *                        type from the 'folders' table schema
+ * @param props.parents - Collection of parent folder objects inferred from the database schema
+ *                        using Drizzle ORM's $inferSelect method, which extracts the
+ *                        type from the 'folders' table schema        
  * @returns A React component that mimics Google Drive's file browser interface
  */
 export default async function DriveContents(props: {
