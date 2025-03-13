@@ -1,6 +1,6 @@
-import "server-only";
+// import "server-only";
 
-import { int, text, index, singlestoreTableCreator, bigint } from "drizzle-orm/singlestore-core";
+import { int, text, index, singlestoreTableCreator, bigint, timestamp } from "drizzle-orm/singlestore-core";
 
 // NOTE: This helps to avoid table name collisions with other application by prefixing the table name with the application name.
 export const createTable = singlestoreTableCreator(
@@ -8,14 +8,17 @@ export const createTable = singlestoreTableCreator(
 )
 
 export const files_table = createTable("files_table", {
-  id : bigint({mode: "number", unsigned: true}).primaryKey().autoincrement(),
+  id: bigint({ mode: "number", unsigned: true }).primaryKey().autoincrement(),
+  ownerId: text("owner_id").notNull(),
   name: text("name").notNull(),
   size: int("size").notNull(),
   url: text("url").notNull(),
-  parent: bigint("parent", {mode: "number", unsigned: true}).notNull(),
+  parent: bigint("parent", { mode: "number", unsigned: true }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => {
   return [
-    index("parent_index").on(t.parent)
+    index("parent_index").on(t.parent),
+    index("owner_id_index").on(t.ownerId)
   ]
 })
 
@@ -33,12 +36,15 @@ export const files_table = createTable("files_table", {
 export type DB_FileType = typeof files_table.$inferSelect;
 
 export const folders_table = createTable("folders_table", {
-  id : bigint({mode: "number", unsigned: true}).primaryKey().autoincrement(),
+  id: bigint({ mode: "number", unsigned: true }).primaryKey().autoincrement(),
+  ownerId: text("owner_id").notNull(),
   name: text("name").notNull(),
-  parent: int("parent"),
+  parent: bigint("parent", { mode: "number", unsigned: true }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => {
   return [
-    index("parent_index").on(t.parent)
+    index("parent_index").on(t.parent),
+    index("owner_id_index").on(t.ownerId)
   ]
 })
 

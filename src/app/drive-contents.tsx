@@ -9,6 +9,7 @@ import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
+import { and, eq, isNull } from "drizzle-orm";
 
 /**
  * A Google Drive clone component that displays folders and files in a hierarchical structure.
@@ -32,6 +33,8 @@ export default function DriveContents(props: {
   folders: (typeof folders_table.$inferSelect)[];
   // we use same type as folders because parents represent folders
   parents: (typeof folders_table.$inferSelect)[];
+
+  currentFolderId: number;
 }) {
 
   const navigate = useRouter();
@@ -85,10 +88,14 @@ export default function DriveContents(props: {
             ))}
           </ul>
         </div>
-        <UploadButton endpoint="imageUploader" onClientUploadComplete={() => {
+        <UploadButton endpoint="driveUploader" onClientUploadComplete={() => {
           // Nextjs will update new route (hot-swap)
-          navigate.refresh();
-        }}/>
+          navigate.refresh();  
+        }}
+        input={{
+          folderId: props.currentFolderId
+        }}
+        />
       </div>
     </div>
   );

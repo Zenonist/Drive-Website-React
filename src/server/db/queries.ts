@@ -2,7 +2,6 @@ import "server-only";
 
 import { db } from "~/server/db";
 import {
-    DB_FileType,
     files_table as fileSchema,
     folders_table as folderSchema,
 } from "~/server/db/schema";
@@ -22,21 +21,34 @@ export const QUERIES = {
      * @throws {Error} Throws an error if a parent folder is not found in the database
      */
     getAllParentsForFolder: async function (folderId: number) {
+        // First check if the folder exists
+        const currentFolder = await db
+            .select()
+            .from(folderSchema)
+            .where(eq(folderSchema.id, folderId));
+
+        if (!currentFolder[0] || currentFolder.length === 0) {
+            throw new Error(`Folder with ID ${folderId} not found`);
+        }
+
         const parents = [];
         let currentFolderId: number | null = folderId;
+
         while (currentFolderId !== null) {
             const folder = await db
                 .selectDistinct()
                 .from(folderSchema)
-                .where(eq(folderSchema.id, currentFolderId)
-                );
-            if (!folder || folder.length === 0) {
+                .where(eq(folderSchema.id, currentFolderId));
+                
+            if (!folder[0] || folder.length === 0) {
                 throw new Error("parent folder not found");
             }
-            // Reverse the order of the parents array -> This will make the correct order of the directory or path
-            if (folder[0]?.id !== 1) {
+            
+            // Don't check for ID 1 - instead check if it's the root folder (has null parent)
+            if (folder[0]?.parent !== null) {
                 parents.unshift(folder[0]);
             }
+            
             currentFolderId = folder[0]?.parent ?? null;
         }
         return parents;
@@ -56,6 +68,16 @@ export const QUERIES = {
             .select()
             .from(fileSchema)
             .where(eq(fileSchema.parent, folderId));
+    },
+    getFolderById: async function (folderId: number) {
+        const folder = await db
+        .select()
+        .from(folderSchema)
+        .where(eq(folderSchema.id, folderId))
+        if (!folder || folder.length === 0) {
+            throw new Error("folder not found");
+        }
+        return folder[0];
     }
 }
 
@@ -71,7 +93,7 @@ export const MUTATIONS = {
     }) {
         return await db.insert(fileSchema).values({
             ...input.file,
-            parent: input.file.parent
+            ownerId: input.userId
         });
     }
 }

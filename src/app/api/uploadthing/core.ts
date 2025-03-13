@@ -1,7 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { MUTATIONS } from "~/server/db/queries";
+import { z } from "zod";
+import { MUTATIONS, QUERIES } from "~/server/db/queries";
 
 const f = createUploadthing();
 
@@ -9,28 +10,43 @@ const f = createUploadthing();
 export const ourFileRouter = {
     // Define as many FileRoutes as you like, each with a unique routeSlug
     // f -> use to create a file route
-    imageUploader: f({
-        image: {
+    driveUploader: f({
+        // Blob = anything
+        blob: {
             /**
              * For full list of options and defaults, see the File Route API reference
              * @see https://docs.uploadthing.com/file-routes#route-config
              */
-            maxFileSize: "4MB",
-            maxFileCount: 1,
+            maxFileSize: "1GB",
+            maxFileCount: 9999,
         },
-    })
+    }).input(z.object({
+        folderId: z.number()
+    }))
         // Set permissions and file types for this FileRoute
-        .middleware(async () => {
+        .middleware(async ({ input }) => {
             // This code runs on your server before upload
             const user = await auth();
-            
+
             console.log("user", user);
 
             // If you throw, the user will not be able to upload
             if (!user.userId) throw new UploadThingError("Unauthorized");
+            
+            // Get folder information by id
+            const folder = await QUERIES.getFolderById(input.folderId);
 
-            // Whatever is returned here is accessible in onUploadComplete as `metadata`
-            return { userId: user.userId };
+            if (!folder){
+                throw new UploadThingError("Folder not found");
+            }
+
+            if (folder.ownerId !== user.userId) {
+                throw new UploadThingError("Unauthorized");
+            }
+
+
+            // ! Whatever is returned here is accessible in onUploadComplete as `metadata`
+            return { userId: user.userId, parentId: input.folderId };
         })
         .onUploadComplete(async ({ metadata, file }) => {
             // This code RUNS ON YOUR SERVER after upload
@@ -42,7 +58,7 @@ export const ourFileRouter = {
                     name: file.name,
                     size: file.size,
                     url: file.ufsUrl,
-                    parent: 0,
+                    parent: metadata.parentId,
                 },
                 userId: metadata.userId,
             })
