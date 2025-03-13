@@ -7,6 +7,8 @@ import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+import { QUERIES } from "~/server/db/queries";
 /**
  * A Google Drive clone component that displays folders and files in a hierarchical structure.
  *
@@ -24,7 +26,7 @@ import { useRouter } from "next/navigation";
  *                        type from the 'folders' table schema
  * @returns A React component that mimics Google Drive's file browser interface
  */
-export default function DriveContents(props: {
+export default async function DriveContents(props: {
   files: (typeof files_table.$inferSelect)[];
   folders: (typeof folders_table.$inferSelect)[];
   // we use same type as folders because parents represent folders
@@ -41,7 +43,7 @@ export default function DriveContents(props: {
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center">
             <Link
-              href="/f/1"
+              href={`/drive`}
               className="mr-2 text-gray-300 hover:text-gray-100"
             >
               My Drive
