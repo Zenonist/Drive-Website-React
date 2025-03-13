@@ -31,22 +31,23 @@ export const ourFileRouter = {
             console.log("user", user);
 
             // If you throw, the user will not be able to upload
-            // @typescript-eslint/only-throw-error
-            if (!user.userId) throw new UploadThingError("Unauthorized");
+            if (!user.userId) {
+                const error = new UploadThingError("Unauthorized");
+                throw error;
+            }
             
             // Get folder information by id
             const folder = await QUERIES.getFolderById(input.folderId);
 
-            // @typescript-eslint/only-throw-error
-            if (!folder){
-                throw new UploadThingError("Folder not found");
+            if (!folder) {
+                const error = new UploadThingError("Folder not found");
+                throw error;
             }
 
-            // @typescript-eslint/only-throw-error
             if (folder.ownerId !== user.userId) {
-                throw new UploadThingError("Unauthorized");
+                const error = new UploadThingError("Unauthorized");
+                throw error;
             }
-
 
             // ! Whatever is returned here is accessible in onUploadComplete as `metadata`
             return { userId: user.userId, parentId: input.folderId };
