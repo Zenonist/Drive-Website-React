@@ -1,16 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Folder, FileIcon, Upload, ChevronRight } from "lucide-react";
-import { Button } from "../components/ui/button";
+import { ChevronRight } from "lucide-react";
 import { FileRow, FolderRow } from "./file-row";
 import { files_table, folders_table } from "~/server/db/schema";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
-import { and, eq, isNull } from "drizzle-orm";
-
 /**
  * A Google Drive clone component that displays folders and files in a hierarchical structure.
  *

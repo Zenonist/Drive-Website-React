@@ -1,7 +1,7 @@
 import { Folder as FolderIcon, FileIcon } from "lucide-react";
 // Link is a component that allows you to navigate between pages in your Next.js application without reloading the entire page.
 import Link from "next/link";
-import { folders_table, files_table } from "~/server/db/schema";
+import type { folders_table, files_table } from "~/server/db/schema";
 
 export function FileRow(props: { file: typeof files_table.$inferSelect }) {
   const { file } = props;

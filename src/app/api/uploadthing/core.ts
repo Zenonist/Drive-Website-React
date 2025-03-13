@@ -31,15 +31,18 @@ export const ourFileRouter = {
             console.log("user", user);
 
             // If you throw, the user will not be able to upload
+            // @typescript-eslint/only-throw-error
             if (!user.userId) throw new UploadThingError("Unauthorized");
             
             // Get folder information by id
             const folder = await QUERIES.getFolderById(input.folderId);
 
+            // @typescript-eslint/only-throw-error
             if (!folder){
                 throw new UploadThingError("Folder not found");
             }
 
+            // @typescript-eslint/only-throw-error
             if (folder.ownerId !== user.userId) {
                 throw new UploadThingError("Unauthorized");
             }
