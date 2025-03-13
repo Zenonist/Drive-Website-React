@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation";
  *                        type from the 'folders' table schema        
  * @returns A React component that mimics Google Drive's file browser interface
  */
-export default async function DriveContents(props: {
+export default function DriveContents(props: {
   files: (typeof files_table.$inferSelect)[];
   folders: (typeof folders_table.$inferSelect)[];
   // we use same type as folders because parents represent folders
