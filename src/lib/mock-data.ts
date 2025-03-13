@@ -1,4 +1,4 @@
-import { Folder } from "lucide-react";
+import type { Folder } from "lucide-react";
 export interface File {
   id: string;
   name: string;

@@ -56,6 +56,14 @@ const config = {
         ]
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["src/app/api/uploadthing/core.ts"],
+      "rules": {
+        "@typescript-eslint/only-throw-error": "off"
+      }
+    }
+  ]
 }
 module.exports = config;
