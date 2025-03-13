@@ -2,12 +2,12 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, Suspense } from "react";
+import { useEffect } from "react";
 import { usePostHog } from "posthog-js/react";
 
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import dynamicLoader from "next/dynamic";
 
 // This allows us to load PostHog dynamically, so that it doesn't load on the server.
@@ -21,7 +21,7 @@ const SuspendedPostHogPageView = dynamicLoader(
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
       api_host: "/ingest",
       ui_host: "https://us.posthog.com"
     });
@@ -49,7 +49,7 @@ function PostHogPageView() {
     } else {
       posthog.reset();
     }
-  }, [posthog, userInfo.user?.id]);
+  }, [posthog, userInfo.user]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

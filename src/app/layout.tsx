@@ -8,7 +8,7 @@ import { PostHogProvider } from "./_providers/posthog-provider";
 export const metadata: Metadata = {
   title: "Google-Drive-Clone",
   description: "",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/icon.svg" }],
 };
 
 export default function RootLayout({

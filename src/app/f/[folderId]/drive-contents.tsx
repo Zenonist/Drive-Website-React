@@ -22,6 +22,9 @@ import { useRouter } from "next/navigation";
  * @param props.folders - Collection of folder objects inferred from the database schema
  *                        using Drizzle ORM's $inferSelect method, which extracts the
  *                        type from the 'folders' table schema
+ * @param props.parents - Collection of parent folder objects inferred from the database schema
+ *                        using Drizzle ORM's $inferSelect method, which extracts the
+ *                        type from the 'folders' table schema        
  * @returns A React component that mimics Google Drive's file browser interface
  */
 export default function DriveContents(props: {
@@ -41,7 +44,7 @@ export default function DriveContents(props: {
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center">
             <Link
-              href="/f/1"
+              href={`/drive`}
               className="mr-2 text-gray-300 hover:text-gray-100"
             >
               My Drive
@@ -71,8 +74,9 @@ export default function DriveContents(props: {
           <div className="border-b border-gray-700 px-6 py-4">
             <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-400">
               <div className="col-span-6">Name</div>
-              <div className="col-span-3">Type</div>
-              <div className="col-span-3">Size</div>
+              <div className="col-span-2">Type</div>
+              <div className="col-span-2">Size</div>
+              <div className="col-span-1"></div>
             </div>
           </div>
           <ul>
