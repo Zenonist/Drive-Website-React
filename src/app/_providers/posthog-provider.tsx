@@ -49,7 +49,7 @@ function PostHogPageView() {
     } else {
       posthog.reset();
     }
-  }, [posthog, userInfo.user?.id]);
+  }, [posthog, userInfo.user]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
