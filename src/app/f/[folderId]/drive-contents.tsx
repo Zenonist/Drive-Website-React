@@ -7,6 +7,15 @@ import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { UploadButton } from "~/utils/uploadthing";
 import { useRouter } from "next/navigation";
+import { Button } from "~/components/ui/button";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
+import { createFolder } from "~/server/actions";
 /**
  * A Google Drive clone component that displays folders and files in a hierarchical structure.
  *
@@ -24,7 +33,7 @@ import { useRouter } from "next/navigation";
  *                        type from the 'folders' table schema
  * @param props.parents - Collection of parent folder objects inferred from the database schema
  *                        using Drizzle ORM's $inferSelect method, which extracts the
- *                        type from the 'folders' table schema        
+ *                        type from the 'folders' table schema
  * @returns A React component that mimics Google Drive's file browser interface
  */
 export default function DriveContents(props: {
@@ -35,8 +44,9 @@ export default function DriveContents(props: {
 
   currentFolderId: number;
 }) {
-
   const navigate = useRouter();
+  const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
 
   return (
     <div className="min-h-screen bg-gray-900 p-8 text-gray-100">
@@ -88,14 +98,84 @@ export default function DriveContents(props: {
             ))}
           </ul>
         </div>
-        <UploadButton endpoint="driveUploader" onClientUploadComplete={() => {
-          // Nextjs will update new route (hot-swap)
-          navigate.refresh();  
-        }}
-        input={{
-          folderId: props.currentFolderId
-        }}
-        />
+        
+        <div className="mt-4 flex items-center">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 border-gray-700 bg-gray-800 hover:bg-gray-700"
+              onClick={() => setIsCreateFolderOpen(true)}
+            >
+              Create Folder
+            </Button>
+          <div className="flex-1 flex justify-end">
+            <UploadButton
+              endpoint="driveUploader"
+              onClientUploadComplete={() => {
+                // Nextjs will update new route (hot-swap)
+                navigate.refresh();
+              }}
+              input={{
+                folderId: props.currentFolderId,
+              }}
+            />
+          </div>
+        </div>
+            <Dialog
+              open={isCreateFolderOpen}
+              onOpenChange={(open: boolean | ((prevState: boolean) => boolean)) => {
+                setIsCreateFolderOpen(open);
+                if (!open) setNewFolderName("");
+              }}
+            >
+              <DialogContent className="border-gray-700 bg-gray-800 text-gray-100">
+                <DialogHeader>
+                  <DialogTitle>Create New Folder</DialogTitle>
+                </DialogHeader>
+                <form className="space-y-4 pt-2">
+                  <div className="space-y-2">
+                    <label htmlFor="folderName" className="text-sm font-medium">
+                      Folder Name
+                    </label>
+                    <input
+                      id="folderName"
+                      value={newFolderName}
+                      onChange={(e) => {
+                        setNewFolderName(e.target.value);
+                      }}
+                      placeholder="Enter folder name"
+                      className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      autoFocus
+                      required
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3 pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={async () => {
+                        await createFolder(newFolderName, props.currentFolderId);
+                        setNewFolderName("");
+                        setIsCreateFolderOpen(false);
+                      }}
+                      className="border-gray-600 bg-gray-700 hover:bg-gray-600"
+                    >
+                      Create
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setNewFolderName("");
+                        setIsCreateFolderOpen(false);
+                      }}
+                      className="border-gray-600 bg-gray-700 hover:bg-gray-600"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
       </div>
     </div>
   );
