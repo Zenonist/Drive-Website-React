@@ -90,6 +90,28 @@ export const QUERIES = {
                 isNull(folderSchema.parent)
             ));
         return rootFolder[0];
+    },
+    getFilesAndFoldersByFolderId: async function (folderId: number) {
+        let foldersCheck = [folderId];
+        let files = [];
+        let folders = [];
+
+        while (foldersCheck.length > 0) {
+            // Get all files in the current folder
+            const fileResult = this.getFiles(foldersCheck[0]!);
+            files.push(...(await fileResult).map((file) => file.id));
+            // Get all folders in the current folder
+            const folderResult = await db
+                .select()
+                .from(folderSchema)
+                .where(eq(folderSchema.parent, foldersCheck[0]!));
+            // Remove the current folder from the list
+            foldersCheck.shift();
+            // Add the new folders to the list
+            foldersCheck.push(...folderResult.map((folder) => folder.id));
+            folders.push(...folderResult.map((folder) => folder.id));
+        }
+        return [files, folders];
     }
 }
 
