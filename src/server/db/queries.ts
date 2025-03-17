@@ -92,9 +92,9 @@ export const QUERIES = {
         return rootFolder[0];
     },
     getFilesAndFoldersByFolderId: async function (folderId: number) {
-        let foldersCheck = [folderId];
-        let files = [];
-        let folders = [];
+        const foldersCheck = [folderId];
+        const files = [];
+        const folders = [];
 
         while (foldersCheck.length > 0) {
             // Get all files in the current folder

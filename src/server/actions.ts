@@ -73,7 +73,7 @@ export async function deleteFolder(folderId: number) {
         throw new Error("Unauthorized");
     }
 
-    let [filesList, foldersList] = await QUERIES.getFilesAndFoldersByFolderId(folderId);
+    const [filesList, foldersList] = await QUERIES.getFilesAndFoldersByFolderId(folderId);
     console.log("filesList", filesList);
     console.log("foldersList", foldersList);
 
