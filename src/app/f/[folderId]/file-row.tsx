@@ -32,7 +32,7 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
           </Link>
         </div>
         <div className="col-span-2 text-gray-400">{"file"}</div>
-        <div className="col-span-2 text-gray-400">{file.size}</div>
+        <div className="col-span-2 text-gray-400">{`${(file.size / 1024).toFixed(2)} KB`}</div>
         <div className="col-span-2 text-gray-400">
           <Button variant="ghost" onClick={() => deleteFile(file.id)}>
             <Trash2 className="mr-2" size={16} />
