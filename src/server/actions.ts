@@ -50,12 +50,14 @@ export async function createFolder(name: string, parentId: number) {
     if (!session.userId) {
         throw new Error("Unauthorized");
     }
-    const folder = await db.insert(folders_table).values({
+    const folderResult = await db.insert(folders_table).values({
         name,
         parent: parentId,
         ownerId: session.userId,
     });
     
+    console.log(folderResult);
+
     // Update the cookie to force a refresh
     const c = await cookies();
     c.set("force-refresh", JSON.stringify(Math.random()));

@@ -109,8 +109,8 @@ export default function DriveContents(props: {
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => {
-                        createFolder(newFolderName, props.currentFolderId);
+                      onClick={async () => {
+                        await createFolder(newFolderName, props.currentFolderId);
                         setNewFolderName("");
                         setIsCreateFolderOpen(false);
                       }}
